@@ -1,0 +1,38 @@
+<div class="container mt-5">
+    <div class="row">
+
+        <div class="col-md-6 col mx-auto">
+
+            <div class="card">
+
+                <div class="card-body">
+                    <h3 class="card-title text-center">Bienvenido a Onda Polígono</h3>
+                    <hr>
+                    <div class="card-text">
+                        <form ngNativeValidate (ngSubmit)="onSubmit()" [formGroup]="forma">
+
+                            <mat-form-field class="w-100 p-2">
+                                <input formControlName="email" type="email" required matInput placeholder="email">
+                                <mat-error *ngIf="email.invalid && email.touched">
+                                    Es necesario introducir un email válido
+                                </mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field class="w-100 p-2">
+                                <input formControlName="password" type="password" required matInput placeholder="password">
+                            </mat-form-field>
+
+                            <mat-checkbox formControlName="recuerdame" color="primary">Recuérdame</mat-checkbox>
+
+                            <button class="w-100 p-2" mat-raised-button color="primary">Entrar</button>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>

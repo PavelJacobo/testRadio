@@ -1,0 +1,42 @@
+<div class="container mt-5">
+    <div class="row">
+
+        <div class="col-md-6 col mx-auto">
+
+            <div class="card">
+
+                <div class="card-body">
+                    <h3 class="card-title text-center">Bienvenido a Onda Polígono</h3>
+                    <hr>
+                    <div class="card-text">
+                        <form (ngSubmit)="onSubmit()" [formGroup]="forma">
+
+                            <mat-form-field class="w-100 p-2">
+                                <input type="text" formControlName="nombre" required matInput placeholder="nombre">
+                            </mat-form-field>
+
+                            <mat-form-field class="w-100 p-2">
+                                <input formControlName="email" type="email" required matInput placeholder="email">
+                            </mat-form-field>
+
+                            <mat-form-field class="w-100 p-2">
+                                <input formControlName="password" type="password" matInput placeholder="contrseña">
+                            </mat-form-field>
+                            <mat-form-field class="w-100 p-2">
+                                <input formControlName="password2" type="password" matInput placeholder="repita contraseña">
+                            </mat-form-field>
+                            <mat-checkbox formControlName="terminos" color="primary">Acepto los términos</mat-checkbox>
+
+                            <button class="w-100 p-2" mat-raised-button color="primary">Registrarme</button>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
