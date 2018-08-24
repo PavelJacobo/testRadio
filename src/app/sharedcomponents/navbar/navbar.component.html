@@ -15,21 +15,21 @@
             <!-- <li class="nav-item cursor-pointer">
                 <a class="nav-link" routerLink="/registrar">Registrar</a>
             </li> -->
-            <li routerLinkActive="active" *ngIf="_loginService.isLogged()" class="nav-item cursor-pointer">
+            <li routerLinkActive="active" *ngIf="_usuarioService.isLogged()" class="nav-item cursor-pointer">
                 <a class="nav-link" routerLink="/adminpanel">Administrador</a>
             </li>
         </ul>
         <ul class="form-inline my-2 my-lg-0 navbar-nav ml-auto">
-            <li *ngIf="_loginService.isLogged()" class="nav-item">
-                <img width="50" height="50" [src]="_loginService.usuario.img | imagen" alt="imagen de usuario" class=" mr-3 rounded-circle">
-                <span class="navbar-text mr-3">{{ usuario?.nombre }}</span>
+            <li *ngIf="_usuarioService.isLogged()" class="nav-item">
+                <img width="50" height="50" [src]="_usuarioService.usuario.img | imagen" alt="imagen de usuario" class=" mr-3 rounded-circle">
+                <span class="navbar-text mr-3">{{ _usuarioService.usuario.nombre }}</span>
             </li>
 
-            <li *ngIf="!_loginService.isLogged()" class="nav-item cursor-pointer">
+            <li *ngIf="!_usuarioService.isLogged()" class="nav-item cursor-pointer">
                 <button routerLink="/login" class="btn btn-outline-success my-2 my-sm-0">Entrar</button>
             </li>
-            <li *ngIf="_loginService.isLogged()" class="nav-item cursor-pointer">
-                <button (click)="_loginService.logout()" class="btn btn-outline-danger my-2 my-sm-0">Salir</button>
+            <li *ngIf="_usuarioService.isLogged()" class="nav-item cursor-pointer">
+                <button (click)="_usuarioService.logout()" class="btn btn-outline-danger my-2 my-sm-0">Salir</button>
             </li>
         </ul>
     </div>

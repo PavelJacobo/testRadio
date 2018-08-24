@@ -5,7 +5,7 @@ import { LoginComponent } from './login/login.component';
 import { AboutComponent } from './about/about.component';
 import { HomeComponent } from './home/home.component';
 import { AngularMaterialModule } from '../angular-material.module';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RegisterComponent } from './login/register.component';
 import { AdminpanelComponent } from './adminpanel/adminpanel.component';
@@ -15,6 +15,7 @@ import { OcupacionLocalComponent } from './ocupacion-local/ocupacion-local.compo
 import { PerfilUsuarioComponent } from './perfil-usuario/perfil-usuario.component';
 import { PerfilProgramaComponent } from './perfil-programa/perfil-programa.component';
 import { PipeModule } from '../pipes/pipes.module';
+import { GestionProgramasComponent } from './gestion-programas/gestion-programas.component';
 
 
 @NgModule({
@@ -28,11 +29,13 @@ import { PipeModule } from '../pipes/pipes.module';
         ProgramacionComponent,
         OcupacionLocalComponent,
         PerfilUsuarioComponent,
-        PerfilProgramaComponent
+        PerfilProgramaComponent,
+        GestionProgramasComponent
     ],
     imports: [
         CommonModule,
         PipeModule,
+        FormsModule,
         AngularMaterialModule,
         HttpClientModule,
         RouterModule,
@@ -41,11 +44,13 @@ import { PipeModule } from '../pipes/pipes.module';
     exports: [
         LoginComponent,
         PipeModule,
+        FormsModule,
         AboutComponent,
         HomeComponent,
         HttpClientModule,
         RegisterComponent,
-        AdminpanelComponent
+        AdminpanelComponent,
+        GestionProgramasComponent
     ],
     providers: [],
 })

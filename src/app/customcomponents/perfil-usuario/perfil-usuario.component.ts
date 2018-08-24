@@ -3,8 +3,9 @@ import { FormGroup, FormBuilder, FormArray, Validators  } from '@angular/forms';
 import { UsuarioService } from '../../services/authService/usuario.service';
 import { Router } from '@angular/router';
 import { Usuario } from '../../modelos/usuario.modelo';
-import { Programa } from '../../modelos/modelo.index';
 import { AdminService } from '../../services/admin/admin.service';
+import Swal from 'sweetalert2';
+import { ProgramaService } from '../../services/programa/programa.service';
 
 export interface DiasSemana {
   value: number;
@@ -17,73 +18,43 @@ export interface DiasSemana {
   styles: []
 })
 export class PerfilUsuarioComponent implements OnInit {
-  diasSemana: DiasSemana[] = [
-  {value: 0, viewValue: 'Domingo'},
-  {value: 1, viewValue: 'Lunes'},
-  {value: 2, viewValue: 'Martes'},
-  {value: 3, viewValue: 'Miércoles'},
-  {value: 4, viewValue: 'Jueves'},
-  {value: 5, viewValue: 'Viernes'},
-  {value: 6, viewValue: 'Sábado'},
-  ];
-  forma: FormGroup;
-  formProgram: FormGroup;
-  public username: string;
+
+  public forma: FormGroup;
   public usuario: Usuario;
-  public open: boolean;
   public imagenSubir: File;
+  public imagenTemp: string | ArrayBuffer | null;
+  // programas: Programa[];
 
   constructor(  public router: Router,
                 public fb: FormBuilder,
                 public _usuarioService: UsuarioService,
-                public _adminService: AdminService) {
-                  this.open = false;
-                 }
+                public _programaService: ProgramaService,
+                public _adminService: AdminService) {}
 
   ngOnInit() {
-    this.username = localStorage.getItem('email') || '';
+
     this.usuario = this._usuarioService.usuario;
+
     this.forma = this.fb.group({
+      programas: [this._usuarioService.usuario.programas],
       nombre: [this.usuario.nombre, [
         Validators.required
       ]],
-      email: [ this.username, [
+      email: [ this._usuarioService.usuario.email, [
         Validators.required,
         Validators.email
-      ]],
-      programa: ['']
+      ]]
     });
 
-    this.formProgram = this.fb.group({
-      nombre: ['', Validators.required],
-      contenido: ['', Validators.required],
-      fechas: this.fb.array([]),
-      colaboradores: [this.usuario._id, Validators.required],
-    });
   }
  // GETS Variables
 
-   get nombrePrograma() {
-     return this.formProgram.get('nombre');
-   }
-
-   get fechasForm() {
-     return this.formProgram.get('fechas') as FormArray;
-   }
-
-   get contenidoPrograma() {
-     return this.formProgram.get('contenido');
-   }
-
-   get colaboradoresPrograma() {
-     return this.formProgram.get('colaboradores');
-   }
     get nombre() {
       return this.forma.get('nombre');
     }
 
-    get programa() {
-      return this.forma.get('programa');
+    get programas() {
+      return this.forma.get('programas');
     }
 
     get email() {
@@ -94,10 +65,15 @@ export class PerfilUsuarioComponent implements OnInit {
   onSubmit() {
     this.usuario.nombre = this.nombre.value;
     this.usuario.email = this.email.value;
-
+    this.usuario.programas = this.programas.value;
+    this.cambiarImagen();
     this._usuarioService.updateUser(this.usuario)
-                      .subscribe((res) => console.log(res));
+                      .subscribe((res) => {
+                        console.log(res);
+                        this.programas.setValue(this._usuarioService.usuario.programas);
+                      });
   }
+
 
   seleccionImagen( archivo: File ) {
     console.log ( archivo );
@@ -105,41 +81,59 @@ export class PerfilUsuarioComponent implements OnInit {
       this.imagenSubir = null;
       return;
     }
+
+    if ( archivo.type.indexOf('image') < 0 ) {
+      Swal('Solo imágenes', 'El archivo seleccionado no es una imagen', 'error');
+      return;
+      this.imagenSubir = null;
+    }
+
     this.imagenSubir = archivo;
-    this.cambiarImagen();
+
+    const reader = new FileReader();
+    const urlImagenTemp = reader.readAsDataURL( archivo );
+    reader.onloadend = () => this.imagenTemp = reader.result;
   }
 
   cambiarImagen() {
-    this._usuarioService.cambiarImagen( this.imagenSubir, this.usuario._id);
+    this._usuarioService.cambiarImagen( this.imagenSubir, 'usuario', this.usuario._id);
   }
 
-  onSubmitPrograma() {
-    const programa = new Programa (
-      this.nombrePrograma.value,
-      this.contenidoPrograma.value,
-      this.colaboradoresPrograma.value,
-      this.fechasForm.value
-    );
- console.log(programa);
-//  this._adminService.crearPrograma(programa).subscribe((res) => console.log(res));
+//   onSubmitPrograma() {
+//     const programa = new Programa (
+//       this.nombrePrograma.value,
+//       this.contenidoPrograma.value,
+//       this.colaboradoresPrograma.value,
+//       this.fechasForm.value
+//     );
+//  console.log(programa);
+// //  this._adminService.crearPrograma(programa).subscribe((res) => console.log(res));
+//   }
+
+  // addFecha() {
+  //   const fecha = this.fb.group({
+  //     dia: ['', [Validators.required]],
+  //     horaInicio: ['', [Validators.required]],
+  //     horaFin: ['', [Validators.required]]
+  //   });
+
+  //   this.fechasForm.push(fecha);
+  // }
+
+  // deleteFecha( i ) {
+  //   this.fechasForm.removeAt( i );
+  // }
+
+  // viewPrograma() {
+  // this.open = !this.open;
+  // }
+
+  compareWithFunc(a, b) {
+    return a === b._id;
   }
 
-  addFecha() {
-    const fecha = this.fb.group({
-      dia: ['', [Validators.required]],
-      horaInicio: ['', [Validators.required]],
-      horaFin: ['', [Validators.required]]
-    });
-
-    this.fechasForm.push(fecha);
-  }
-
-  deleteFecha( i ) {
-    this.fechasForm.removeAt( i );
-  }
-
-  viewPrograma() {
-  this.open = !this.open;
+  cancelar() {
+    this.router.navigate(['/home']);
   }
 
 }

@@ -1,7 +1,6 @@
 <div class="row">
     <div class="col-md-6 ml-5">
         <p><span class="badge badge-secondary">Configuración de usuario</span></p>
-        <hr>
         <form ngNativeValidate [formGroup]="forma" (ngSubmit)="onSubmit()">
 
             <mat-form-field class="w-100 p-2">
@@ -9,73 +8,24 @@
             </mat-form-field>
 
             <mat-form-field class="w-100 p-2">
-                <mat-select placeholder="Selecciona un programa">
-                    <mat-option></mat-option>
+                <mat-select formControlName="programas" placeholder="Colaborando en..." [compareWith]="compareWithFunc" multiple>
+                    <mat-option selected *ngFor="let programa of _programaService.programas; let i=index" [value]="programa._id">{{ programa.nombre }}</mat-option>
                 </mat-select>
             </mat-form-field>
-            <!-- <button type="button" (click)="viewPrograma()" class="w-10" mat-raised-button color="primary">Crear un programa</button> -->
 
             <mat-form-field class="w-100 p-2">
                 <input formControlName="email" type="email" required matInput placeholder="correo">
             </mat-form-field>
 
             <button class="w-50" mat-raised-button color="primary">Actualizar Usuario</button>
-            <button class="w-49 ml-1" mat-raised-button color="warn">Cancelar</button>
+            <button type="button" (click)="cancelar()" class="w-49 ml-1" mat-raised-button color="warn">Cancelar</button>
         </form>
     </div>
     <div class="col-md-3 ml-5 mt-5">
-        <img #upload (click)="file.click()" width="333" height="333" [src]="_usuarioService.usuario.img | imagen" alt="imagen de usuario" class=" mr-3 rounded-circle cambiar">
+        <img *ngIf="!imagenTemp" #upload (click)="file.click()" width="333" height="333" [src]="_usuarioService.usuario.img | imagen" alt="imagen de usuario" class=" mr-3 rounded-circle cambiar">
+        <img *ngIf="imagenTemp" #upload (click)="file.click()" width="333" height="333" [src]="imagenTemp" alt="imagen de usuario" class=" mr-3 rounded-circle cambiar">
         <input #file type="file" accept="image/*" (change)="seleccionImagen( $event.target.files[0] )" hidden>
         <hr>
-
     </div>
 
 </div>
-
-<!-- <div class="row mt-5 mb-5" *ngIf="open">
-    <div class="col-md-6 ml-5 mt-5">
-        <p><span class="badge badge-secondary">Configuración de Nuevo Programa</span></p>
-        <hr>
-        <form ngNativeValidate [formGroup]="formProgram" (ngSubmit)="onSubmitPrograma()">
-
-            <mat-form-field class="w-100 p-2">
-                <input formControlName="nombre" type="text" required matInput placeholder="nombre de programa">
-            </mat-form-field>
-            <mat-form-field class="w-100 p-2">
-                <textarea rows="15" formControlName="contenido" type="text" required matInput placeholder="Descripción"></textarea>
-            </mat-form-field>
-            <div formArrayName="fechas">
-                <div *ngFor="let fecha of fechasForm.controls; let i = index" [formGroupName]="i">
-                    <mat-form-field class="w-50 p-2">
-                        <mat-select formControlName="dia" multiple>
-                            <mat-option *ngFor="let dia of diasSemana" [value]="dia.value">{{ dia.viewValue }}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-form-field class="w-25 p-2">
-                        <input matInput formControlName="horaInicio" type="time">
-                        <mat-hint>Hora de Inicio</mat-hint>
-                    </mat-form-field>
-                    <mat-form-field class="w-25 p-2">
-                        <input matInput formControlName="horaFin" type="time">
-                        <mat-hint>Hora de Fin</mat-hint>
-                    </mat-form-field>
-                </div>
-                <button type="button" (click)="addFecha()" class="w-10" mat-raised-button color="primary">Añadir Fecha</button>
-            </div>
-            <mat-form-field class="w-100 p-2">
-                <p>Colaboradores</p>
-                <mat-chip-list formControlName="colaboradores">
-                    <mat-chip>{{ usuario.nombre }}</mat-chip>
-                </mat-chip-list>
-            </mat-form-field>
-
-            <button class="w-100 p-2" mat-raised-button color="primary">Guardar Programa</button>
-
-        </form>
-    </div>
-    <div class="col-md-3 ml-5 mt-5">
-        <img width="333" [src]="'cualquiercosa' | imagen" height="333" alt="imagen de usuario" class="mr-3 rounded-circle">
-        <hr>
-    </div>
-
-</div> -->

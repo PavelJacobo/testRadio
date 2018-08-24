@@ -1,27 +1,10 @@
 <div class="row">
-    <div class="col-md-6 ml-5 mt-5">
-        <form ngNativeValidate [formGroup]="forma" (ngSubmit)="onSubmit()">
-
-            <mat-form-field class="w-100 p-2">
-                <input formControlName="nombre" type="text" required matInput placeholder="nombre de programa">
-            </mat-form-field>
-            <mat-form-field class="w-100 p-2">
-                <textarea rows="15" formControlName="contenido" type="text" required matInput placeholder="Descripción"></textarea>
-            </mat-form-field>
-            <mat-form-field class="w-100 p-2">
-                <p>Colaboradores</p>
-                <mat-chip-list formControlName="colaboradores">
-                    <mat-chip></mat-chip>
-                </mat-chip-list>
-            </mat-form-field>
-
-            <button class="w-100 p-2" mat-raised-button color="primary">Actualizar</button>
-
-        </form>
+    <div class="col-6">
+        <button *ngFor="let programa of usuario.programas" (click)="datoAHijo(programa)" type="button" class="btn btn-secondary mr-2 mt-2">{{ programa.nombre }}</button>
     </div>
-    <div class="col-md-3 ml-5 mt-5">
-        <img width="333" height="333" alt="imagen de usuario" class=" mr-3 rounded-circle">
-        <hr>
+</div>
+<div class="row">
+    <div class="col-12">
+        <app-gestion-programas [colaboradores]="colaboradores" [programa]="programa"></app-gestion-programas>
     </div>
-
 </div>

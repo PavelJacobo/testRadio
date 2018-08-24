@@ -1,0 +1,34 @@
+<div class="row mt-5">
+    <div class="col-md-6 ml-5">
+        <form ngNativeValidate #f="ngForm" (ngSubmit)="onSubmit(f.value)">
+
+            <mat-form-field class="w-100 p-2">
+                <input [ngModel]="programa?.nombre" name="nombre" class="form-control" type="text" required matInput placeholder="nombre de programa...">
+            </mat-form-field>
+
+            <mat-form-field class="w-100 p-2">
+                <textarea [ngModel]="programa?.contenido" name="contenido" class="form-control" rows="15" type="contenido" required matInput placeholder="contenido..."></textarea>
+            </mat-form-field>
+
+            <mat-form-field class="w-100 p-2">
+                <p>
+                    <mat-hint>Colaboradores</mat-hint>
+                </p>
+                <mat-chip-list>
+                    <mat-chip *ngFor="let colaborador of colaboradores">{{ colaborador.nombre }}</mat-chip>
+                </mat-chip-list>
+            </mat-form-field>
+
+            <button *ngIf="!programa" class="w-50 " mat-raised-button color="primary">Crear Programa</button>
+            <button *ngIf="programa" [disabled]="f.pristine" class="w-50 " mat-raised-button color="primary">Actualizar</button>
+            <button type="button" (click)="cancelar()" class="w-49 ml-1" mat-raised-button color="warn">Cancelar</button>
+        </form>
+    </div>
+    <div class="col-md-3 ml-5 mt-5">
+        <img *ngIf="!imagenTemp" #upload (click)="file.click()" width="333" height="333" [src]=" programa?.img | imagen:'programa'" alt="imagen de Programa" class=" mr-3  cambiar">
+        <img *ngIf="imagenTemp" #upload (click)="file.click()" width="333" height="333" [src]="imagenTemp" alt="imagen de Programa" class=" mr-3  cambiar">
+        <input class="form-control" #file type="file" accept="image/*" (change)="seleccionImagen( $event.target.files[0] )" hidden>
+        <hr>
+    </div>
+
+</div>

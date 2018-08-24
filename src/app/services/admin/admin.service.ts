@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Programa } from '../../modelos/modelo.index';
 import { URL_SERVICE } from '../../config/config.config';
 import { HttpClient } from '@angular/common/http';
 
@@ -43,9 +42,5 @@ export class AdminService {
         });
       }
 
-    // crearPrograma (programa: Programa) {
-    //     let url = `${ URL_SERVICE }/programa`;
-    //     url += '?token=' + this._loginService.token;
-    //     return this.http.post( url, programa );
-    // }
+
 }

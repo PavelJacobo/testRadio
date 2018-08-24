@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { URL_SERVICE } from '../../config/config.config';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Usuario } from '../../modelos/usuario.modelo';
 import { LoginUsuario } from '../../modelos/login-usuario.modelo';
 import { map } from 'rxjs/internal/operators';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AdminService } from '../admin/admin.service';
-
+import { ProgramaService } from '../programa/programa.service';
+import {forkJoin} from 'rxjs';
 @Injectable({
     providedIn: 'root'
 })
@@ -19,7 +20,8 @@ export class UsuarioService {
     constructor(
         public router: Router,
         public http: HttpClient,
-        public _adminService: AdminService
+        public _adminService: AdminService,
+        public _programaService: ProgramaService
     ) {
         this.cargarStorage();
     }
@@ -29,7 +31,6 @@ export class UsuarioService {
     }
 
     cargarStorage() {
-        console.log('AQUI LLEGÓ');
         if ( localStorage.getItem('token')) {
           this.token = localStorage.getItem('token');
           this.usuario = JSON.parse(localStorage.getItem('usuario'));
@@ -74,7 +75,6 @@ export class UsuarioService {
 
     createUser(usuario: Usuario) {
         const url = `${URL_SERVICE}/usuario`;
-        console.log('URL ', url);
         return this.http.post(url, usuario);
     }
 
@@ -84,23 +84,44 @@ export class UsuarioService {
         return this.http.put( url, usuario ).pipe(map(( res: any ) => {
             this.usuario = res.usuario;
             const usuarioDB: Usuario = res.usuario;
-            this.guardarStorage(usuarioDB._id, this.token, usuarioDB);
-            Swal('Usuario actializado', usuario.nombre, 'success');
-            return true;
+            this._programaService.updateProgramas(res.usuario.programas, this.token, res.usuario._id)
+            .then((responnse: any) => {
+                this.usuario.programas = responnse;
+                usuarioDB.programas = responnse;
+                this.guardarStorage(usuarioDB._id, this.token, usuarioDB);
+                Swal('Usuario actualizado', usuario.nombre, 'success');
+                return true;
+            });
         }));
     }
 
-    cambiarImagen( archivo: File, id: string ) {
 
-        this._adminService.subirArchivo( archivo, 'usuario', id )
+    cambiarImagen( archivo: File, coleccion: string, id: string  ) {
+        if (!archivo || archivo === undefined ) {
+            return;
+        }
+
+        this._adminService.subirArchivo( archivo, coleccion , id )
                                  .then((res: any) => {
                                      console.log(res);
                                     this.usuario.img = res.usuario.img;
-                                    Swal('Imagen actualizada', this.usuario.nombre, 'success');
                                     this.guardarStorage(id, this.token, this.usuario );
                                  })
                                  .catch((res: any) => {
                                     console.log(res);
                                  });
        }
+
+    findUser(_idsDeUsuarios) {
+        const busquedas = [];
+        console.log(_idsDeUsuarios);
+        _idsDeUsuarios.forEach((_id) => {
+            let url = URL_SERVICE + '/usuario/' + _id;
+            url += '?token=' + this.token;
+            busquedas.push(this.http.get(url, _id).pipe(map((res: any) => {
+                return res.usuario;
+            })));
+        });
+        return forkJoin(busquedas);
+    }
 }
